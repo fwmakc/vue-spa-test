@@ -1,10 +1,20 @@
 <template>
+  <v-select
+    :value="modelValue"
+    :label="label"
+    :items="options"
+    variant="plain"
+    @update:modelValue="$emit('update:modelValue', $event)"
+  ></v-select>
+
+  <!--
   <select
-    :value="current"
-    @change="changeOption"
+    :value="modelValue"
+    // ^ @update:modelValue="$emit('update:modelValue', $event)"
+    @change="$emit('update:modelValue', $event.target.value)"
   >
     <option
-      disables
+      disabled
       value=""
     >
       Выберите из списка
@@ -17,13 +27,18 @@
       {{ option.title }}
     </option>
   </select>
+  -->
 </template>
 
 <script>
 export default {
   name: 'UiSelect',
   props: {
-    current: {
+    modelValue: {
+      type: String,
+      default: ''
+    },
+    label: {
       type: String,
       default: ''
     },
@@ -32,11 +47,15 @@ export default {
       default: () => []
     }
   },
-  methods: {
-    changeOption(event) {
-      this.$emit('update:modelValue', event.target.value);
+  data() {
+    return {
     }
-  }
+  },
+  emits: [
+    'update'
+  ],
+  methods: {
+  },
 }
 </script>
 

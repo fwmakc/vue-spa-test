@@ -1,4 +1,9 @@
 <template>
+  <div
+    @click="$router.back()"
+  >
+    &lt; назад
+  </div>
   <div class="post" v-if="post">
     <h1 class="post__title">{{ post.title }}</h1>
     <p class="post__body">{{ post.body }}</p>
@@ -25,6 +30,7 @@
 import axios from 'axios';
 
 export default {
+  name: 'PagePost',
   props: {
     id: {
       type: [String, Number],

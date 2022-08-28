@@ -1,6 +1,6 @@
 <template>
   <div>
-    <entries-new
+    <EntriesNew
       @create="entryCreate"
     />
   </div>
@@ -11,7 +11,7 @@ import EntriesNew from '@/components/Entries/EntriesNew.vue';
 import axios from 'axios';
 
 export default {
-  name: 'PagesNew',
+  name: 'PageNew',
   components: {
     EntriesNew
   },

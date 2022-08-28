@@ -1,15 +1,29 @@
 <template>
-  <ui-select
-    v-model="modelValue"
+  <v-select
+    :value="modelValue"
+    :items="users"
+    label="Автор"
+    variant="plain"
+    @update:modelValue="$emit('update:modelValue', $event)"
+  ></v-select>
+
+  <!--
+  <UiSelect
     :options="users"
-    @update="$emit('update', modelValue)"
+    label="Автор"
+    v-model="current"
+    @update:modelValue="$emit('update:modelValue', current)"
   />
+  -->
 </template>
 
 <script>
 export default {
   name: 'EntriesFilter',
   props: {
+    modelValue: {
+      required: true
+    },
     users: {
       type: Array,
       required: true
@@ -17,8 +31,10 @@ export default {
   },
   data() {
     return {
-      modelValue: ''
+      current: this.modelValue
     }
+  },
+  methods: {
   }
 }
 </script>

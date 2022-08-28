@@ -1,9 +1,20 @@
 <template>
-  <ui-select
-    v-model="modelValue"
+  <v-select
+    :value="modelValue"
+    :items="sortOptions"
+    label="Сортировка"
+    variant="plain"
+    @update:modelValue="$emit('update:modelValue', $event)"
+  ></v-select>
+
+  <!--
+  <UiSelect
     :options="sortOptions"
-    @update="$emit('update', modelValue)"
+    label="Сортировка"
+    v-model="current"
+    @update:modelValue="$emit('update:modelValue', current)"
   />
+  -->
 </template>
 
 <script>
@@ -11,7 +22,7 @@ export default {
   name: 'EntriesSort',
   data() {
     return {
-      modelValue: 'asc',
+      current: this.modelValue,
       sortOptions: [
         {
           value: 'asc',

@@ -1,7 +1,7 @@
 <template>
   <div class="page" v-if="show">
     <div class="page__header">
-      <ui-title
+      <UiTitle
         :title="title"
       />
       <button

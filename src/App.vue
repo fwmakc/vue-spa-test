@@ -1,31 +1,27 @@
 <template>
-
-  <p>
-    <router-link to="/">Go to Home</router-link>
-    <router-link to="/new/">Создать пост</router-link>
-  </p>
-  
-  <router-view
-    v-model="entries"
-    @create="entryCreate"
-  >
-  </router-view>
-
-  <LikeDislike />
+  <v-app>
+    <NavBar />
+    <v-main>
+      <v-container>
+        <RouterView
+          v-model="entries"
+          @create="entryCreate"
+        />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import LikeDislike from '@/components/LikeDislike.vue';
+import NavBar from '@/components/Sections/NavBar.vue';
 
 export default {
   name: 'App',
   components: {
-    LikeDislike,
+    NavBar
   },
-  data() {
-    return {
-    }
-  },
+  data: () => ({
+  }),
   methods: {
   }
 }
@@ -37,11 +33,5 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
 }
 </style>

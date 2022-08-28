@@ -1,9 +1,10 @@
 <template>
   <div>
-    <entries-item
+    <EntriesItem
       v-for="entry in entries"
       :key="entry.id"
       :entry="entry"
+      :entryName="entryName"
       @remove="$emit('remove', entry)"
     />
   </div>
@@ -18,6 +19,10 @@ export default {
     EntriesItem
   },
   props: {
+    entryName: {
+      type: String,
+      required: true
+    },
     entries: {
       type: Array,
       required: true

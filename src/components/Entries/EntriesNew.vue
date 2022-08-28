@@ -1,10 +1,11 @@
 <template>
   <form @submit.prevent>
-    <ui-input
+    <UiInput
+      v-focus
       v-model="entry.title"
       placeholder="Название"
     />
-    <ui-input
+    <UiInput
       v-model="entry.body"
       placeholder="Описание"
     />
