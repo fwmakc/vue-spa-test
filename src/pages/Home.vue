@@ -67,7 +67,7 @@
       ></v-pagination>
     </v-col>
   </v-row>
-  <v-row>
+  <v-row v-if="filterComputed.length > 0">
     <v-col cols="12">
       <!--
       <div v-intersection="fetchEntriesMore"></div>
