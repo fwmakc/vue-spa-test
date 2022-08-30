@@ -18,6 +18,9 @@ export function useEntries() {
     page.value = value;
     fetchEntries();
   }
+  const addEntry = (entry) => {
+    store.commit('entries/addEntry', entry);
+  }
   const removeEntry = (entry) => {
     store.commit('entries/removeEntry', entry);
   }
@@ -26,12 +29,14 @@ export function useEntries() {
 
   return {
     entries: computed(() => store.state.entries.entries),
+    storage: computed(() => store.state.entries.storage),
     loading: computed(() => store.state.entries.loading),
     pages: computed(() => store.state.entries.pages),
     page,
     limit,
     fetchEntriesPage,
     fetchEntriesMore,
-    removeEntry
+    removeEntry,
+    addEntry
   }
 }

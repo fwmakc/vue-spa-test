@@ -24,10 +24,6 @@ export default {
   name: 'App',
   components: {
     NavBar
-  },
-  data: () => ({
-  }),
-  methods: {
   }
 }
 </script>

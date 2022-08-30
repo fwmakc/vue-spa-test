@@ -3,6 +3,7 @@ import axios from 'axios';
 export const entriesModule = {
   state: () => ({
     entries: [],
+    storage: [],
     loading: true,
     pages: 0,
     more: false,
@@ -22,6 +23,9 @@ export const entriesModule = {
     setMore(state, data) {
       state.more = data;
     },
+    addEntry(state, entry) {
+      state.storage.unshift(entry);
+    },
     removeEntry(state, entry) {
       state.entries = state.entries.filter(e => e.id !== entry.id);
     }
@@ -36,7 +40,8 @@ export const entriesModule = {
             _limit: values.limit
           }
         });
-        commit('setEntries', !state.more ? response.data : [...state.entries, ...response.data]);
+        const storage = state.more ? state.entries : (values.page === 1 ? state.storage : []);
+        commit('setEntries', [...storage, ...response.data]);
         commit('setPages', Math.ceil(response.headers['x-total-count'] / values.limit));
       } catch(e) {
         console.log('Ошибка', e);

@@ -9,7 +9,7 @@
     style="position: relative;"
   >
     <v-container
-        style="position: absolute; top: 0; left: 0;"
+      style="position: absolute; top: 0; left: 0;"
     >
       <v-btn
         variant="plain"
@@ -156,6 +156,8 @@ export default {
   data() {
     return {
       post: {
+        id: null,
+        userId: null,
         title: '',
         body: '',
       },

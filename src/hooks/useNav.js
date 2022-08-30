@@ -9,11 +9,6 @@ export function useNav() {
       title: 'Главная'
     },
     {
-      name: 'entry',
-      icon: 'mdi-file',
-      title: 'Посты'
-    },
-    {
       name: 'new',
       icon: 'mdi-plus',
       title: 'Создать новый'
