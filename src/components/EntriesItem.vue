@@ -13,7 +13,9 @@
           width="100%"
           height="100%"
           src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+          style="cursor: pointer"
           cover
+          @click="$router.push({ name: entryName, params: { id: entry.id } })"
         >
           <div
             class="text-h4 text-white px-3 py-3 d-block d-md-none"
@@ -32,6 +34,8 @@
           </div>
           <p
             class="text-h4 text--primary d-none d-md-block"
+            style="cursor: pointer"
+            @click="$router.push({ name: entryName, params: { id: entry.id } })"
           >
             {{ entry.title }}
           </p>

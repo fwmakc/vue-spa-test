@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import EntriesNew from '@/components/Entries/EntriesNew.vue';
+import EntriesNew from '@/components/EntriesNew.vue';
 import axios from 'axios';
 
 export default {

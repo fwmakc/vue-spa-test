@@ -1,21 +1,16 @@
 import {ref, computed} from 'vue';
 
-export default function useFilter(sortedEntries) {
-  const filterSelected = ref('');
+export function useFilter(sortedEntries) {
+  const filter = ref('');
   
-  const filterSelectedComputed = computed(() => {
-    if (!filterSelected.value) {
-      return sortedEntries;
-    }
-    return sortedEntries.filter(
-      (entry) => {
-        return entry.userId.toString() == filterSelected.value;
-      }
-    );
-  });
-  
+  const filterComputed = computed(() => !filter.value ? sortedEntries.value : sortedEntries.value.filter(
+    (entry) => entry.userId.toString() == filter.value
+  ));
+  const filterChange = (value) => { filter.value = value };
+
   return {
-    filterSelected,
-    filterSelectedComputed
+    filter,
+    filterComputed,
+    filterChange
   }
 }

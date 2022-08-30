@@ -1,41 +1,37 @@
-import axios from 'axios';
-import {ref, onMounted} from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
 
-export default function useEntries(limit) {
-  const entries = ref([]);
+export function useEntries() {
   const page = ref(1);
-  const entriesLoading = ref(true);
-  const totalPages = ref(0);
-  
-  const fetching = async () => {
-    try {
-      const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-        params: {
-          _page: page.value,
-          _limit: limit
-        }
-      });
-      totalPages.value = Math.ceil(response.headers['x-total-count'] / limit);
-      entries.value = response.data;
-      //const responseUsers = await axios.get('https://jsonplaceholder.typicode.com/users');
-      //this.usersFetch = responseUsers.data;
-      //this.usersFetch.forEach(value => this.users.push({
-      //  value: value.id,
-      //  title: value.name
-      //}));
-    } catch(e) {
-      alert('Ошибка');
-    } finally {
-      entriesLoading.value = false;
-    }
+  const limit = ref(10);
+
+  const store = useStore();
+  const fetchEntries = () => {
+    store.dispatch('entries/fetchEntries', {page: page.value, limit: limit.value});
+  }
+  const fetchEntriesMore = () => {
+    page.value += 1;
+    store.commit('entries/setMore', true);
+    fetchEntries();
+  }
+  const fetchEntriesPage = (value) => {
+    page.value = value;
+    fetchEntries();
+  }
+  const removeEntry = (entry) => {
+    store.commit('entries/removeEntry', entry);
   }
 
-  onMounted(fetching);
+  onMounted(fetchEntries);
 
   return {
-    entries,
-    entriesLoading,
+    entries: computed(() => store.state.entries.entries),
+    loading: computed(() => store.state.entries.loading),
+    pages: computed(() => store.state.entries.pages),
     page,
-    totalPages
+    limit,
+    fetchEntriesPage,
+    fetchEntriesMore,
+    removeEntry
   }
 }

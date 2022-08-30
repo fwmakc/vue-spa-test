@@ -2,7 +2,12 @@
   <v-app>
     <NavBar />
     <v-main>
-      <v-container>
+      <v-container
+        :class="{
+          'px-0': $route.name === 'post',
+          'py-0': $route.name === 'post',
+        }"
+      >
         <RouterView
           v-model="entries"
           @create="entryCreate"
@@ -13,7 +18,7 @@
 </template>
 
 <script>
-import NavBar from '@/components/Sections/NavBar.vue';
+import NavBar from '@/components/NavBar.vue';
 
 export default {
   name: 'App',

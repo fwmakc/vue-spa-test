@@ -1,5 +1,4 @@
 <template>
-
   <v-navigation-drawer app
     v-model="drawer"
     absolute
@@ -15,7 +14,20 @@
         active-class="deep-purple--text text--accent-4"
       >
         <v-list-item
-          v-for="item in addition"
+          @click="drawer = !drawer"
+        >
+          <v-list-item-title>
+            <v-list-item-icon class="mr-3 text-grey">
+              <v-icon>mdi-chevron-left</v-icon>
+            </v-list-item-icon>
+            Закрыть
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-divider class="my-1 py-0"></v-divider>
+        
+        <v-list-item
+          v-for="item in nav"
           :key="item.name"
           @click="$router.push({ name: item.name })"
         >
@@ -40,12 +52,10 @@
     ></v-app-bar-nav-icon>
     <v-toolbar-title>{{ current.title }}</v-toolbar-title>
   </v-app-bar>
-
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-//import { useRouting } from '@/hooks/useRouting';
+import { useNav } from '@/hooks/useNav';
 
 export default {
   name: 'NavBar',
@@ -53,24 +63,14 @@ export default {
     drawer: false,
     group: null,
   }),
-  methods: {
-    ...mapMutations({
-      setRoutes: 'routes/setRoutes',
-      setCurrentRoute: 'routes/setCurrentRoute',
-    })
-  },
-  mounted() {
-    this.setRoutes();
-    this.setCurrentRoute();
-  },
-  computed: {
-    ...mapState({
-      routes: state => state.routes.routes,
-      current: state => state.routes.current,
-      addition: state => state.routes.addition,
-    })
-  },
-  setup () {
+  setup() {
+    const {routes, current, nav} = useNav();
+
+    return {
+      routes,
+      current,
+      nav
+    }
   }
 }
 </script>

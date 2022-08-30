@@ -8,10 +8,16 @@ export const usersModule = {
   },
   mutations: {
     setUsers(state, data) {
-      data.forEach(value => state.users.push({
-          value: value.id,
-          title: value.name
-      }));
+      data.forEach(item => {
+        if (!state.users.find(
+          user => user.title === item.name && user.value === item.id
+        )) {
+          state.users.push({
+            value: item.id,
+            title: item.name
+          });
+        }
+      });
     }
   },
   actions: {

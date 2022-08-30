@@ -1,182 +1,106 @@
 <template>
-  <div class="row">
-    <EntriesSort
-      v-model="sortOrder"
-      @update:modelValue="entrySort"
-    />
-    <EntriesFilter
-      :users="users"
-      v-model="filterSelected"
-      @update:modelValue="entryFilter"
-    />
-  </div>
-  <div v-if="entries.length > 0">
-    <EntriesList
-      :entries-old="entries"
-      :entries="filterSelectedComputed"
-      @remove="entryRemove"
-    />
-  </div>
-  <div v-else>
-    <p v-if="entriesLoading">
-      Идет загрузка...
-    </p>
-    <p v-else>
-      Список пуст
-    </p>
-  </div>
-  <div>
-    <div
-      v-for="pageNumber in totalPages"
-      :key="pageNumber"
-      :class="{
-        'active': page === pageNumber
-      }"
-      @click="changePage(pageNumber)"
+  <v-row>
+    <v-col
+      cols="12"
+      sm="6"
     >
-      {{ pageNumber }}
-    </div>
-  </div>
-  <div v-intersection="fetchEntriesMore"></div>
+      <v-select
+        :value="sortOrder"
+        :items="sortOptions"
+        label="Сортировка"
+        variant="plain"
+        @update:modelValue="sortChange"
+      ></v-select>
+    </v-col>
+    <v-col
+      cols="12"
+      sm="6"
+    >
+      <v-select
+        :value="filter"
+        :items="users"
+        label="Автор"
+        variant="plain"
+        @update:modelValue="filterChange"
+      ></v-select>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="12" v-if="filterComputed.length > 0">
+      <EntriesItem
+        v-for="entry in filterComputed"
+        :key="entry.id"
+        :entry="entry"
+        entryName="post"
+        @remove="removeEntry"
+      />
+    </v-col>
+    <v-col cols="12" v-else>
+      <p v-if="loading">
+        Идет загрузка...
+      </p>
+      <p v-else>
+        Список пуст
+      </p>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col
+      cols="12"
+      class="text-center my-4"
+    >
+      <v-btn
+        @click="fetchEntriesMore"
+      >
+        Загрузить еще
+      </v-btn>
+    </v-col>
+    <v-col
+      cols="12"
+      class="text-center my-4"
+    >
+      <v-pagination
+        v-model="page"
+        :length="pages"
+        rounded="circle"
+        @update:modelValue="fetchEntriesPage"
+      ></v-pagination>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="12">
+      <!--
+      <div v-intersection="fetchEntriesMore"></div>
+      -->
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import EntriesList from '@/components/Entries/EntriesList.vue';
-import EntriesSort from '@/components/Entries/EntriesSort.vue';
-import EntriesFilter from '@/components/Entries/EntriesFilter.vue';
-import axios from 'axios';
+import EntriesItem from '@/components/EntriesItem';
+import { useUsers } from '@/hooks/useUsers';
+import { useEntries } from '@/hooks/useEntries';
+import { useSort } from '@/hooks/useSort';
+import { useFilter } from '@/hooks/useFilter';
 
 export default {
   name: 'PageHome',
   components: {
-    EntriesList,
-    EntriesSort,
-    EntriesFilter
+    EntriesItem
   },
-  data() {
+  setup() {
+    const {users} = useUsers();
+    const {entries, loading, pages, page, limit, fetchEntriesPage, fetchEntriesMore, removeEntry} = useEntries();
+    const {sortOrder, sortOptions, sortOrderComputed, sortChange} = useSort(entries);
+    const {filter, filterComputed, filterChange} = useFilter(sortOrderComputed);
+
     return {
-      users: [],
-      usersFetch: [],
-      entries: [],
-      entriesFetch: [],
-      entriesLoading: true,
-      filterSelected: '',
-      sortOrder: 'asc',
-      page: 1,
-      limit: 10,
-      totalPages: 0
-    }
-  },
-  methods: {
-    changePage(pageNumber) {
-      this.page = pageNumber;
-      this.fetchEntries();
-    },
-    entryFilter(entry) {
-      this.filterSelected = entry;
-    },
-    entrySort(entry) {
-      this.sortOrder = entry;
-    },
-    entryCreate(entry) {
-      this.entries.push(entry);
-    },
-    entryRemove(entry) {
-      this.entries = this.entries.filter(e => e.id !== entry.id);
-    },
-    async fetchEntries() {
-      try {
-        this.entriesLoading = true;
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-          params: {
-            _page: this.page,
-            _limit: this.limit
-          }
-        });
-        this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-        this.entriesFetch = this.entries = response.data;
-        const responseUsers = await axios.get('https://jsonplaceholder.typicode.com/users');
-        this.usersFetch = responseUsers.data;
-        this.usersFetch.forEach(value => this.users.push({
-          value: value.id,
-          title: value.name
-        }));
-      } catch(e) {
-        alert('Ошибка');
-      } finally {
-        this.entriesLoading = false;
-      }
-    },
-    async fetchEntriesMore() {
-      try {
-        this.page += 1;
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-          params: {
-            _page: this.page,
-            _limit: this.limit
-          }
-        });
-        this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-        this.entriesFetch = this.entries = [...this.entriesFetch, ...response.data];
-        const responseUsers = await axios.get('https://jsonplaceholder.typicode.com/users');
-        this.usersFetch = responseUsers.data;
-        this.usersFetch.forEach(value => this.users.push({
-          value: value.id,
-          title: value.name
-        }));
-      } catch(e) {
-        alert('Ошибка');
-      }
-    }
-  },
-  mounted() {
-    this.fetchEntries();
-  },
-  computed: {
-    sortOrderComputed() {
-      const array = [...this.entries].sort(
-        (post1, post2) => {
-          return post1.title?.localeCompare(post2.title)
-        });
-      if (this.sortOrder !== 'asc') {
-        array.reverse();
-      }
-      return array;
-    },
-    filterSelectedComputed() {
-      if (!this.filterSelected) {
-        return this.sortOrderComputed;
-      }
-      return this.sortOrderComputed.filter(
-        (entry) => {
-          return entry.userId.toString() == this.filterSelected;
-        }
-      );
-    }
-  },
-  /*
-  watch: {
-    sortOrder(value) {
-      this.entries.sort(
-        (post1, post2) => {
-          return post1.title?.localeCompare(post2.title)
-        });
-      if (value !== 'asc') {
-        this.entries.reverse();
-      }
-    },
-    filterSelected(value) {
-      if (!value) {
-        return;
-      }
-      this.entries = this.entriesFetch.filter(
-        (entry) => {
-          return entry.userId.toString() == value;
-        }
-      );
+      users,
+      entries, loading, pages, page, limit, fetchEntriesPage, fetchEntriesMore, removeEntry,
+      sortOrder, sortOptions, sortOrderComputed, sortChange,
+      filter, filterComputed, filterChange,
     }
   }
-  */
 }
 </script>
 
